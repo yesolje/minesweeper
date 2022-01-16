@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mycss.css">
+    
+    <title>MINESWEEPER</title>
+</head>
+
+<body>
+    <div class="circle"></div>
+    <div class="tail" style="position:absolute; left:0; top:0; z-index:999;"></div>
+    <header>
+        <h1>MINESWEEPER</h1>
+    </header>
+    <section id="body">
+        <ul id="main-inner-ul">
+            <li>
+                <div id="select">9x9 Level</div>
+            </li>
+            <li>
+                <div id="custom">
+                    <!--후에 커스텀 부분은 동적 생성으로 바꿔야 함-->
+                    <select name="customRow" id="customRow" class="form-control-style">
+                        <option value="">가로칸</option> 
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">99</option>
+                    </select>
+                    <select name="customColumn" id="customColumn" class="form-control-style">
+                        <option value="">세로칸</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">99</option>
+                    </select>
+                    <select name="customMine" id="customMine" class="form-control-style">
+                        <option value="">지뢰수</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">99</option>
+                    </select>
+                    
+                </div>
+            </li>
+            <li>
+                <div id="goButton">GO</div>
+            </li>
+        </ul>
+
+
+
+    </section>
+
+</body>
+<script>
+    //레벨 설정에 대한 내용
+    let select = document.querySelector('#select');
+    let custom = document.querySelector('#custom');
+    let levelstatus = 1;
+    select.addEventListener('click', function (event) {
+        if (levelstatus == 1) {
+            select.innerHTML = "16x16 Level";
+            levelstatus = 2;
+        } else if (levelstatus == 2) {
+            select.innerHTML = "CUSTOM";
+            custom.style.visibility = 'visible';
+            levelstatus = 3;
+        } else if (levelstatus == 3) {
+            select.innerHTML = "9 x 9 Level";
+            custom.style.visibility = 'hidden';
+            levelstatus = 1;
+        }
+    });
+
+</script>
+<script type="text/javascript" src="mouse.js"></script>
+</html>

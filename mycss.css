@@ -1,0 +1,171 @@
+@font-face {
+  font-family: "escoreDream7";
+  src: url("fonts/SCDream7.otf"); /*폰트 : 에스코어드림7*/
+}
+@font-face {
+  font-family: "escoreDream6";
+  src: url("fonts/SCDream6.otf"); /*폰트 : 에스코어드림6*/
+}
+@font-face {
+  font-family: "escoreDream5";
+  src: url("fonts/SCDream5.otf"); /*폰트 : 에스코어드림5*/
+}
+@font-face {
+  font-family: "escoreDream4";
+  src: url("fonts/SCDream4.otf"); /*폰트 : 에스코어드림4*/
+}
+@font-face {
+  font-family: "escoreDream3";
+  src: url("fonts/SCDream3.otf"); /*폰트 : 에스코어드림3*/
+}
+@font-face {
+  font-family: "escoreDream2";
+  src: url("fonts/SCDream2.otf"); /*폰트 : 에스코어드림2*/
+}
+@font-face {
+  font-family: "escoreDream1";
+  src: url("fonts/SCDream1.otf"); /*폰트 : 에스코어드림1*/
+}
+@font-face {
+  font-family: "LabDigital";
+  src: url("fonts/LabDigital.ttf");
+}
+
+/*커서 설정*******************************************/
+html {
+  cursor: none;
+}
+
+.circle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: rgb(22, 124, 128);
+  transform: translate(-50%, -50%);
+}
+
+.tail {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgb(255, 255, 255);
+  transform: translate(-50%, -50%);
+  z-index: 999;
+}
+/*커서 설정 end*******************************************/
+
+body {
+  margin: 0 auto;
+  background-color: #b7e3e4 !important;
+}
+
+header {
+  margin-top: 10%;
+}
+
+header h1 {
+  text-align: center;
+  font-size: 72px;
+  color: rgb(240, 63, 53);
+  font-family: "escoreDream7";
+} /*메인페이지 MINESWEEPER*/
+
+header h2 {
+  text-align: center;
+  font-size: 32px;
+  color: rgb(240, 63, 53);
+  font-family: "escoreDream7";
+  margin-bottom: 0px;
+} /*게임페이지 상태창*/
+
+ul {
+  list-style: none;
+  padding: 0px;
+} /*ul 기본 세팅*/
+
+#main-inner-ul > li {
+  margin: 30px;
+  font-family: "escoreDream5";
+} /*레벨커스텀단*/
+
+#game-inner-ul > li {
+  margin: 10px;
+  font-family: "escoreDream5";
+} /*게임페이지 시간 및 깃발수 */
+
+#body {
+  display: flex;
+  justify-content: center;
+}
+
+#select {
+  text-align: center;
+  padding: 7px 10px;
+  background-color: rgb(240, 207, 97);
+  font-family: "escoreDream7";
+  color: black;
+  cursor: pointer;
+} /*게임난이도 선택 버튼*/
+
+#custom {
+  visibility: hidden;
+} /*게임난이도 선택 - 난이도 custom 일 경우*/
+
+#goButton {
+  text-align: center;
+  padding: 7px 10px;
+  background-color: rgb(240, 63, 53);
+  font-family: "escoreDream7";
+  color: white;
+  cursor: pointer;
+  width: 100px;
+  transition-duration: 0.3s;
+  margin: 0 auto;
+} /*게임시작버튼*/
+#goButton:hover {
+  background-color: rgb(255, 255, 255);
+  color: black;
+}
+.form-control-style {
+  border: 1px solid rgb(221, 221, 221);
+  padding: 5px 7px;
+  font-family: "escoreDream3";
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.form-control-style2 {
+  background-color: rgb(50,182,122);
+  color: rgb(240, 63, 53);
+  width: 45px;
+  padding: 5px 7px;
+  font-family: "LabDigital";
+  font-size: large;
+  margin-left: 5px;
+  margin-right: 20px;
+}
+#indicator-li{
+  text-align: center;
+}
+.indicator {
+  color: rgb(240, 63, 53);
+  font-family: "escoreDream7";
+}
+#land {
+  margin: 0 auto;
+  background-color: rgb(50,182,122);
+} /*게임테이블*/
+#land td {
+  border: 5px solid rgb(50,182,122);
+  width: 20px;
+  height: 20px;
+  padding:5px 5px;
+  text-align: center;
+  font-family: "escoreDream7";
+  background-color:white;
+}

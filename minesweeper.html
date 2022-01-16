@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="mycss.css">
+    <title>MINESWEEPER</title>
+    <script>
+        //메인단에서 정보 받아서 가지고 있는 로직 필요(진행중)
+        // const url = location.href;
+        // const temp = (url.split('?'))[1].split('');
+        // const tempstring = (url.split('?'))[1];
+        // const levelInfo=[];
+        // console.log(temp);
+        // console.log(tempstring);
+
+
+        let land = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        ];
+        let html = "<table id='land'>";
+
+        //지뢰 갯수를 카운팅하여 반환하는 함수
+        function countingMine() {
+            let mine = 0;
+            for (let row of land) {
+                for (let column of row) {
+                    if (column == 'x') {
+                        mine += 1;
+                    }
+                }
+            }
+            return mine;
+        }
+
+        //선택한 좌표의 인근 지뢰가 몇개 있는지 반환하는 함수
+        function countingNearMine(x, y) {
+            let nearMine = 0;
+
+            let arrange;
+
+            if (x == 0 && y == 0) {
+                arrange = [land[x][y + 1], land[x + 1][y], land[x + 1][y + 1]];
+            } else if (x == 0 && y != 0 && y != 8) {
+                arrange = [land[x][y - 1], land[x + 1][y - 1], land[x + 1][y], land[x + 1][y + 1], land[x][y + 1]];
+            } else if (x == 0 && y == 8) {
+                arrange = [land[x][y - 1], land[x + 1][y - 1], land[x + 1][y]];
+            } else if (x != 0 && x != 8 && y == 0) {
+                arrange = [land[x - 1][y], land[x - 1][y + 1], land[x][y + 1], land[x + 1][y + 1], land[x + 1][y]];
+            } else if (x != 0 && x != 8 && y == 8) {
+                arrange = [land[x - 1][y], land[x - 1][y - 1], land[x][y - 1], land[x + 1][y - 1], land[x + 1][y]];
+            } else if (x == 8 && y == 0) {
+                arrange = [land[x - 1][y], land[x - 1][y + 1], land[x][y + 1]];
+            } else if (x == 8 && y != 8 && y != 0) {
+                arrange = [land[x][y - 1], land[x - 1][y - 1], land[x - 1][y], land[x - 1][y + 1], land[x][y + 1]];
+            } else if (x == 8 && y == 8) {
+                arrange = [land[x][y - 1], land[x - 1][y - 1], land[x - 1][y]];
+            } else {
+                arrange = [
+                    land[x - 1][y - 1], land[x - 1][y], land[x - 1][y + 1],
+                    land[x][y - 1], land[x][y], land[x][y + 1],
+                    land[x + 1][y - 1], land[x + 1][y], land[x + 1][y + 1]
+                ]
+            }
+
+            for (let i of arrange) {
+                if (i == 'x') {
+                    nearMine++;
+                }
+            }
+
+            return nearMine;
+        }
+
+        //지뢰뿌리기
+        while (countingMine() < 10) {
+            land[Math.floor(Math.random() * 9)][Math.floor(Math.random() * 9)] = 'x';
+        }
+
+        //필드에 인접 지뢰 갯수 카운팅하기
+        for (let row = 0; row < land.length; row++) {
+            for (let column = 0; column < land[row].length; column++) {
+                if (land[row][column] != 'x') {
+                    land[row][column] = countingNearMine(row, column);
+                }
+            }
+        }
+
+        //html에 완성된 필드 뿌리기
+        for (let row = 0; row < land.length; row++) {
+            html += '<tr>';
+            for (let column = 0; column < land[row].length; column++) {
+                html += '<td>' + land[row][column] + '</td>';
+            }
+            html += '</tr>';
+        }
+        html += '</table>';
+
+        //console.log(html);
+        console.log(land);
+        //console.log(countingMine());
+
+    </script>
+</head>
+
+<body>
+    <div class="circle"></div>
+    <div class="tail" style="position:absolute; left:0; top:0; z-index:999;"></div>
+    <header>
+        <h2>🧡YOU MADE IT!🧡</h2>
+    </header>
+
+
+    <div id='body'>
+        <ul id='game-inner-ul'>
+            <li id='indicator-li'>
+                <span class="indicator">TIME</span>
+                <input type="text" value="00:00" class="form-control-style2">
+                <span class="indicator">FLAG</span>
+                <input type="text" value="999" class="form-control-style2">
+            </li>
+            <li id='game'></li>
+        </ul>
+    </div>
+
+</body>
+<script>
+    //게임 필드 뿌림
+    document.querySelector('#game').innerHTML = html;
+
+    //숫자 눌렀을때 콘솔에 누른 값 띄우기(todo)
+    
+
+</script>
+<script type="text/javascript" src="mouse.js"></script>
+
+</html>
