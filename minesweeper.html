@@ -6,9 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="mycss.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <title>MINESWEEPER</title>
     <script>
-        //메인단에서 정보 받아서 가지고 있는 로직 필요(진행중)
+        //메인단에서 정보 받아서 가지고 있는 로직 필요(todo)
         // const url = location.href;
         // const temp = (url.split('?'))[1].split('');
         // const tempstring = (url.split('?'))[1];
@@ -43,35 +44,41 @@
             return mine;
         }
 
-        //선택한 좌표의 인근 지뢰가 몇개 있는지 반환하는 함수
-        function countingNearMine(x, y) {
-            let nearMine = 0;
-
+        //모서리 감안해서 탐색 영역 찾아주는 함수
+        function rangeSearching(x, y){
             let arrange;
-
-            if (x == 0 && y == 0) {
+            if (x == 0 && y == 0) {//좌측 맨위 모서리
                 arrange = [land[x][y + 1], land[x + 1][y], land[x + 1][y + 1]];
-            } else if (x == 0 && y != 0 && y != 8) {
+            } else if (x == 0 && y != 0 && y != 8) {//맨위 벽면
                 arrange = [land[x][y - 1], land[x + 1][y - 1], land[x + 1][y], land[x + 1][y + 1], land[x][y + 1]];
-            } else if (x == 0 && y == 8) {
+            } else if (x == 0 && y == 8) {//우측 맨위 모서리
                 arrange = [land[x][y - 1], land[x + 1][y - 1], land[x + 1][y]];
-            } else if (x != 0 && x != 8 && y == 0) {
+            } else if (x != 0 && x != 8 && y == 0) {//우측 벽면
                 arrange = [land[x - 1][y], land[x - 1][y + 1], land[x][y + 1], land[x + 1][y + 1], land[x + 1][y]];
-            } else if (x != 0 && x != 8 && y == 8) {
+            } else if (x != 0 && x != 8 && y == 8) {//맨아래 벽면
                 arrange = [land[x - 1][y], land[x - 1][y - 1], land[x][y - 1], land[x + 1][y - 1], land[x + 1][y]];
-            } else if (x == 8 && y == 0) {
+            } else if (x == 8 && y == 0) {//좌측 맨아래 모서리
                 arrange = [land[x - 1][y], land[x - 1][y + 1], land[x][y + 1]];
-            } else if (x == 8 && y != 8 && y != 0) {
+            } else if (x == 8 && y != 8 && y != 0) {//좌측 벽면
                 arrange = [land[x][y - 1], land[x - 1][y - 1], land[x - 1][y], land[x - 1][y + 1], land[x][y + 1]];
-            } else if (x == 8 && y == 8) {
+            } else if (x == 8 && y == 8) {//우측 맨아래 모서리
                 arrange = [land[x][y - 1], land[x - 1][y - 1], land[x - 1][y]];
-            } else {
+            } else { //주위 8칸 전부 탐색
                 arrange = [
                     land[x - 1][y - 1], land[x - 1][y], land[x - 1][y + 1],
                     land[x][y - 1], land[x][y], land[x][y + 1],
                     land[x + 1][y - 1], land[x + 1][y], land[x + 1][y + 1]
                 ]
             }
+            return arrange;
+        }
+
+
+        //선택한 좌표의 인근 지뢰가 몇개 있는지 반환하는 함수
+        function countingNearMine(x, y) {
+            let nearMine = 0;
+
+            let arrange = rangeSearching(x,y);
 
             for (let i of arrange) {
                 if (i == 'x') {
@@ -100,15 +107,13 @@
         for (let row = 0; row < land.length; row++) {
             html += '<tr>';
             for (let column = 0; column < land[row].length; column++) {
-                html += '<td>' + land[row][column] + '</td>';
+                html += '<td class="hidden">' + land[row][column] + '</td>';
             }
             html += '</tr>';
         }
         html += '</table>';
 
-        //console.log(html);
         console.log(land);
-        //console.log(countingMine());
 
     </script>
 </head>
@@ -117,7 +122,7 @@
     <div class="circle"></div>
     <div class="tail" style="position:absolute; left:0; top:0; z-index:999;"></div>
     <header>
-        <h2>🧡YOU MADE IT!🧡</h2>
+        <h2>🧡Shall we begin?🧡</h2>
     </header>
 
 
@@ -138,10 +143,33 @@
     //게임 필드 뿌림
     document.querySelector('#game').innerHTML = html;
 
-    //숫자 눌렀을때 콘솔에 누른 값 띄우기(todo)
+    //필드 선택했을 경우 동작
+    $('#land td').bind('click', function() { 
+
+        let row = $(this).closest('tr').index(); 
+        let column = $(this).closest('td').index(); 
+
+        $('#land tr:eq('+row+')>td:eq('+column+')').removeClass('hidden');
+        
+        if(land[row][column]==0){
+
+        }else if(land[row][column]=='x'){
+            $('header >h2').html('🤯Touché!🤯');
+            $('#land tr:eq('+row+')>td:eq('+column+')').addClass('red');
+            for(let r=0;r<land.length;r++){
+                for(let c=0;c<land[row].length;c++){
+                    if(land[r][c]=='x'){
+                        $('#land tr:eq('+r+')>td:eq('+c+')').removeClass('hidden');
+                    }
+                }
+            }
+            $('#land').addClass('defeat');
+        }
+
+    });
+
     
 
 </script>
 <script type="text/javascript" src="mouse.js"></script>
-
 </html>

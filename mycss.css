@@ -63,6 +63,9 @@ html {
 body {
   margin: 0 auto;
   background-color: #b7e3e4 !important;
+  -webkit-user-select:none;/*드래그 방지*/
+  -moz-user-select:none;/*드래그 방지*/
+  -ms-user-select:none; /*드래그 방지*/
 }
 
 header {
@@ -158,14 +161,23 @@ ul {
 }
 #land {
   margin: 0 auto;
-  background-color: rgb(50,182,122);
 } /*게임테이블*/
 #land td {
-  border: 5px solid rgb(50,182,122);
   width: 20px;
   height: 20px;
   padding:5px 5px;
   text-align: center;
   font-family: "escoreDream7";
   background-color:white;
+}
+.hidden{
+  color:rgb(182, 182, 182);
+  background-color:rgb(182, 182, 182) !important;
+  box-shadow: 1px 1px 1px black;
+}
+.defeat{
+  pointer-events: none; 
+}
+.red{
+  background-color:rgb(240, 63, 53) !important;
 }

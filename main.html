@@ -77,4 +77,26 @@
 
 </script>
 <script type="text/javascript" src="mouse.js"></script>
+<script>
+    //go 버튼 클릭 시 난이도 정보를 가지고 다음 페이지로 이동
+const goButton = document.querySelector("#goButton");
+goButton.addEventListener("click", function (event) {
+  if (levelstatus == 1) {
+    location.href = "minesweeper.html?row=9&column=9&mine=10";
+  } else if (levelstatus == 2) {
+    location.href = "minesweeper.html?row=16&column=16&mine=40";
+  } else if (levelstatus == 3) {
+    let row = document.querySelector("#customRow").value;
+    let column = document.querySelector("#customColumn").value;
+    let mine = document.querySelector("#customMine").value;
+    if (row == "" || column == "" || mine == "") {
+      alert("custom 모드는 가로,세로,지뢰 수를 설정해야 시작할 수 있습니다!");
+      return;
+    } else {
+      location.href =
+        "minesweeper.html?row=" + row + "&column=" + column + "&mine=" + mine;
+    }
+  }
+});
+</script>
 </html>
