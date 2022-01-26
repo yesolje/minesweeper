@@ -17,7 +17,6 @@
         // console.log(temp);
         // console.log(tempstring);
 
-
         let land = [
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -29,7 +28,11 @@
             [0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0]
         ];
-        let html = "<table id='land'>";
+        let html = "<table id='land'>";//지뢰 테이블 생성하는 html
+        let sec =0; //timer
+        let min =0;//timer
+        let flagCount = 10;
+        let safeField = 81-10;
 
         //지뢰 갯수를 카운팅하여 반환하는 함수
         function countingMine() {
@@ -77,15 +80,12 @@
         //선택한 좌표의 인근 지뢰가 몇개 있는지 반환하는 함수
         function countingNearMine(x, y) {
             let nearMine = 0;
-
             let arrange = rangeSearching(x,y);
-
             for (let i of arrange) {
                 if (i == 'x') {
                     nearMine++;
                 }
             }
-
             return nearMine;
         }
 
@@ -125,14 +125,13 @@
         <h2>🧡Shall we begin?🧡</h2>
     </header>
 
-
     <div id='body'>
         <ul id='game-inner-ul'>
             <li id='indicator-li'>
                 <span class="indicator">TIME</span>
-                <input type="text" value="00:00" class="form-control-style2">
+                <input type="text" value="00:00" id="time" class="form-control-style2">
                 <span class="indicator">FLAG</span>
-                <input type="text" value="999" class="form-control-style2">
+                <input type="text" value="999" id="flag" class="form-control-style2">
             </li>
             <li id='game'></li>
         </ul>
@@ -140,8 +139,12 @@
 
 </body>
 <script>
-    //게임 필드 뿌림
-    document.querySelector('#game').innerHTML = html;
+    let timerStart= setInterval(timer,1000);//시간 시작
+    document.querySelector('#game').innerHTML = html;//게임 필드 뿌림
+    document.querySelector('#flag').value = flagCount;
+    document.addEventListener('contextmenu', function() {//우클릭시 크롬 기본 메뉴창 뜨는것 방지
+        event.preventDefault();
+    });
 
     //필드 선택했을 경우 동작
     $('#land td').bind('click', function() { 
@@ -149,26 +152,86 @@
         let row = $(this).closest('tr').index(); 
         let column = $(this).closest('td').index(); 
 
-        $('#land tr:eq('+row+')>td:eq('+column+')').removeClass('hidden');
-        
+        $('#land tr:eq('+row+')>td:eq('+column+')').removeClass('hidden');//필드를 오픈하는 함수
+        safeField--;
+        if(safeField==0){
+            win();
+        }
         if(land[row][column]==0){
-
-        }else if(land[row][column]=='x'){
+            //0일경우 별도의 재귀함수 필요(todo)
+        }else if(land[row][column]=='x'){//지뢰를 눌렀을 경우
             $('header >h2').html('🤯Touché!🤯');
-            $('#land tr:eq('+row+')>td:eq('+column+')').addClass('red');
+            $('#land tr:eq('+row+')>td:eq('+column+')').addClass('red');//클릭한 지뢰칸은 빨간색으로 표시
             for(let r=0;r<land.length;r++){
                 for(let c=0;c<land[row].length;c++){
                     if(land[r][c]=='x'){
-                        $('#land tr:eq('+r+')>td:eq('+c+')').removeClass('hidden');
+                        $('#land tr:eq('+r+')>td:eq('+c+')').removeClass('hidden');//화면을 찾아다니면서 지뢰칸들만 오픈
                     }
                 }
             }
-            $('#land').addClass('defeat');
+            clearInterval(timerStart); //타이머 멈춤
+            $('#land').addClass('defeat');//졌을 경우 더이상 필드 오픈 불가
         }
-
     });
+    //이겼을 시 함수
+    function win(){
+        $('header >h2').html('👏you did it!👏');
+        for(let r=0;r<land.length;r++){
+                for(let c=0;c<land[row].length;c++){
+                    if(land[r][c]=='x'){
+                        $('#land tr:eq('+r+')>td:eq('+c+')').removeClass('hidden');//화면을 찾아다니면서 지뢰칸들만 오픈
+                    }
+                }
+            }
+            clearInterval(timerStart); //타이머 멈춤
+            $('#land').addClass('defeat');//졌을 경우 더이상 필드 오픈 불가
+    }
 
+    //우클릭시 깃발 나오는 함수
+    document.addEventListener('mousedown', function() {
+        
+        if ((event.button == 2) || (event.which == 3)) {
+            if(flagCount==0){
+                alert('깃발을 다 썼어요...')
+            }else{
+                x = event.clientX;
+                y = event.clientY; 
+                flagCount--;
+                document.querySelector('#flag').value = flagCount;
+                $('<img>', {
+	                src: 'lib/flag.png',
+	                click: function(){ //깃발 재클릭시 사라짐
+                        flagCount++;
+                        document.querySelector('#flag').value = flagCount;
+                        $(this).remove();    
+	                },
+                    class:'flag'
+                }).css({
+                    cursor:'pointer',
+                    width:'30px',
+                    height:'30px',
+	                position:'absolute',
+                    left:x,
+                    top:y
+                }).appendTo('#body');
+            }
+        }          
+    });
     
+
+    //타이머 실행 함수
+    function timer(){
+        let timeString ="";
+        if(sec==60){
+             sec=0;
+             min++;
+         }else{
+             sec++;
+         } 
+         timeString +=(min<10)?"0"+min:min;
+         timeString +=(sec<10)?":0"+sec:":"+sec;
+        $('#time').val(timeString);
+     }
 
 </script>
 <script type="text/javascript" src="mouse.js"></script>
