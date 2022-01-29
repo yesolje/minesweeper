@@ -32,7 +32,6 @@
         let sec =0; //timer
         let min =0;//timer
         let flagCount = 10;
-        let safeField = 81-10;
 
         //지뢰 갯수를 카운팅하여 반환하는 함수
         function countingMine() {
@@ -136,29 +135,49 @@
             <li id='game'></li>
         </ul>
     </div>
-
 </body>
+
 <script>
     let timerStart= setInterval(timer,1000);//시간 시작
+    
     document.querySelector('#game').innerHTML = html;//게임 필드 뿌림
     document.querySelector('#flag').value = flagCount;
     document.addEventListener('contextmenu', function() {//우클릭시 크롬 기본 메뉴창 뜨는것 방지
         event.preventDefault();
     });
-
+    
+    //class hidden 속성을 없애는 함수
+    function removeHidden(x,y){
+        if(x<0 || x>8 || y<0 || y>8){
+            return -1; //좌표가 필드 바깥이라 hidden 속성을 없애지 못했음
+        }else if($('#land tr:eq('+x+')>td:eq('+y+')').hasClass('hidden')==false){
+            return -2; //해당 좌표의 필드가 이미 오픈되어 있어서 속성을 없애지 못했음
+        }else{
+            $('#land tr:eq('+x+')>td:eq('+y+')').removeClass('hidden');
+            return land[x][y]; //좌표가 필드 안쪽이라 hidden 속성을 없앴고 없앤 필드의 값을 반환
+        }
+    }
+    
     //필드 선택했을 경우 동작
     $('#land td').bind('click', function() { 
 
         let row = $(this).closest('tr').index(); 
         let column = $(this).closest('td').index(); 
 
-        $('#land tr:eq('+row+')>td:eq('+column+')').removeClass('hidden');//필드를 오픈하는 함수
-        safeField--;
-        if(safeField==0){
+        //$('#land tr:eq('+row+')>td:eq('+column+')').removeClass('hidden');//필드를 오픈하는 함수(함수화됨)
+        removeHidden(row,column);
+
+        if(($('.hidden').length)==10){
             win();
         }
+
         if(land[row][column]==0){
             //0일경우 별도의 재귀함수 필요(todo)
+            zeroChain(row, column);
+
+
+
+
         }else if(land[row][column]=='x'){//지뢰를 눌렀을 경우
             $('header >h2').html('🤯Touché!🤯');
             $('#land tr:eq('+row+')>td:eq('+column+')').addClass('red');//클릭한 지뢰칸은 빨간색으로 표시
@@ -177,7 +196,7 @@
     function win(){
         $('header >h2').html('👏you did it!👏');
         for(let r=0;r<land.length;r++){
-                for(let c=0;c<land[row].length;c++){
+                for(let c=0;c<land[r].length;c++){
                     if(land[r][c]=='x'){
                         $('#land tr:eq('+r+')>td:eq('+c+')').removeClass('hidden');//화면을 찾아다니면서 지뢰칸들만 오픈
                     }
@@ -185,6 +204,52 @@
             }
             clearInterval(timerStart); //타이머 멈춤
             $('#land').addClass('defeat');//졌을 경우 더이상 필드 오픈 불가
+    }
+
+    //제로 체인 함수
+    //0을 눌렀을 때 발동되는 재귀함수이며 중심지 근처의 8개 필드를 오픈하고 종료함
+    function zeroChain(x, y){
+        let cycle;
+        //1. (x-1 , y)
+        cycle = removeHidden(x-1,y);
+        if(cycle ==0){
+            zeroChain(x-1,y);
+        }
+        //2. (x-1,y+1)
+        cycle = removeHidden(x-1,y+1);
+        if(cycle ==0){
+            zeroChain(x-1,y+1);
+        }
+        //3. (x,y+1)
+        cycle = removeHidden(x,y+1);
+        if(cycle ==0){
+            zeroChain(x,y+1);
+        }
+        //4. (x+1,y+1)
+        cycle = removeHidden(x+1,y+1);
+        if(cycle ==0){
+            zeroChain(x+1,y+1);
+        }
+        //5. (x+1,y)
+        cycle = removeHidden(x+1,y);
+        if(cycle ==0){
+            zeroChain(x+1,y);
+        }
+        //6. (x+1,y-1) 
+        cycle = removeHidden(x+1,y-1);
+        if(cycle ==0){
+            zeroChain(x+1,y-1);
+        }
+        //7. (x,y-1) 
+        cycle = removeHidden(x,y-1);
+        if(cycle ==0){
+            zeroChain(x,y-1);
+        }
+        //8. (x-1,y-1) 
+        cycle = removeHidden(x-1,y-1);
+        if(cycle ==0){
+            zeroChain(x-1,y-1);
+        }
     }
 
     //우클릭시 깃발 나오는 함수
